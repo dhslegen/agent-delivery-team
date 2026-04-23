@@ -1,0 +1,64 @@
+---
+description: 前端命令 · 按 OpenAPI 契约实现 web 侧（含最小 happy-path 测试）。
+argument-hint: "[模块或页面范围]"
+---
+
+# /build-web
+
+**输入**：$ARGUMENTS
+
+---
+
+## Phase 1 — 前置校验
+
+```bash
+test -f docs/api-contract.yaml || { echo "❌ docs/api-contract.yaml 不存在，请先运行 /design"; exit 1; }
+npx --yes @redocly/cli lint docs/api-contract.yaml 2>/dev/null || \
+  echo "⚠️ 契约 lint 有警告，请确认后继续"
+```
+
+## Phase 2 — 脚手架确认
+
+若 `web/` 目录不存在，询问用户是否用 `$ARGUMENTS` 中指定的脚手架初始化（如 `vite`、`next`、`nuxt`）。
+
+## Phase 3 — 派发 frontend-agent
+
+使用 Task 工具派发 `frontend-agent`，传入：
+
+- `docs/api-contract.yaml`（接口契约）
+- `docs/prd.md`（产品需求，含 UI 验收标准）
+- `templates/api-contract.template.yaml`（字段约定参考）
+- `$ARGUMENTS`（模块/页面范围）
+
+frontend-agent 职责：
+1. 按契约实现 API 调用层
+2. 实现页面/组件
+3. 编写最小 happy-path 测试
+
+## Phase 4 — 自动质量校验
+
+```bash
+(cd web && npm run build && npm run lint && npm run typecheck && npm test -- --run)
+```
+
+任一失败时：
+
+> ❌ **质量校验未通过，请修复后重跑 `/build-web`**
+
+## Phase 5 — 汇总输出
+
+```
+/build-web 完成
+
+新增页面/组件: <n> 个
+测试通过:      <passed> / <total>
+构建:          ✅ / ❌
+
+建议下一步：/review 或 /verify
+```
+
+## --refresh
+
+传入 `--refresh` 时，重新执行全流程。
+
+$ARGUMENTS

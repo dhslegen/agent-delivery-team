@@ -1,0 +1,12 @@
+{
+  "name": "digital-delivery-team",
+  "version": "0.3.0",
+  "description": "一人一队：全栈工程师 + 数字员工交付插件。9 个数字员工子代理 + 13 个岗位/编排命令 + 4 个领域知识 skill + 5 个自动度量 hook + 本地度量脚本。",
+  "authors": [
+    { "name": "赵文昊", "email": "dhslegle@gmail.com" }
+  ],
+  "keywords": ["delivery", "efficiency", "agent", "subagent", "workflow", "metrics"],
+  "license": "Proprietary",
+  "homepage": "",
+  "repository": ""
+}

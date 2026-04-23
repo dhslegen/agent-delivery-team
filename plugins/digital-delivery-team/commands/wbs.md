@@ -1,0 +1,61 @@
+---
+description: 项目经理命令 · 从 PRD 拆出 WBS + 依赖图 + 风险清单。
+argument-hint: "[--refresh]"
+---
+
+# /wbs
+
+**输入**：$ARGUMENTS
+
+---
+
+## Phase 1 — 前置校验
+
+```bash
+test -f docs/prd.md || { echo "❌ docs/prd.md 不存在，请先运行 /prd"; exit 1; }
+```
+
+若 `docs/wbs.md` 已存在且未传 `--refresh`，进入增量修订模式。
+
+## Phase 2 — 派发 pm-agent
+
+使用 Task 工具派发 `pm-agent`，传入：
+
+- `docs/prd.md`（产品需求文档）
+- `docs/wbs.md`（已有 WBS，若存在，用于增量修订）
+- `templates/wbs.template.md`（WBS 模板）
+- `templates/risks.template.md`（风险清单模板）
+- `baseline/baseline.locked.json`（工时基线，若存在）
+- `$ARGUMENTS`
+
+pm-agent 产出：
+
+| 产出文件 | 说明 |
+|----------|------|
+| `docs/wbs.md` | 工作分解结构，含关键路径和工时估算 |
+| `docs/risks.md` | 风险清单，含概率/影响/应对措施 |
+
+## Phase 3 — 汇总输出
+
+```
+/wbs 完成
+
+关键路径任务数: <n> 个
+预估总工时:     <n> 小时（基线: <baseline_total> 小时，Δ <±n>%）
+风险 Top 3:
+  1. <risk-1>（<概率> × <影响>）
+  2. <risk-2>
+  3. <risk-3>
+
+产出文件:
+  docs/wbs.md
+  docs/risks.md
+
+建议下一步：/design
+```
+
+## --refresh
+
+传入 `--refresh` 时，重新执行全流程（覆盖已有产出）。
+
+$ARGUMENTS
